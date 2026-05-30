@@ -308,6 +308,7 @@
 <div class="next-event-banner" id="nextEventBanner"></div>
 <div id="legendContainer"></div>
 <div class="calendar" id="calendar"></div>
+<div id="onlineContainer" style="display:flex;justify-content:center;padding:0.75rem 2rem;"></div>
 
 <!-- Modal: Add/Edit Event -->
 <div class="modal-overlay" id="eventModal">
@@ -434,12 +435,12 @@
     filterHtml += `<button class="btn-filter" id="filter-${team.id}" onclick="setFilter('${team.id}')">${escapeHtml(team.name)}</button>`;
   });
   filterHtml += '</div>';
-  filterHtml += '<div class="online-indicator offline" id="onlineIndicator"><span class="status-dot"></span> Lokal</div>';
   filterHtml += '<button class="btn-add" onclick="openAddEventModal()">+ Lägg till händelse</button>';
   if (navigator.share) {
     filterHtml += '<button class="btn-share" onclick="sharePage()">📤 Dela</button>';
   }
   toolbar.innerHTML = filterHtml;
+  document.getElementById('onlineContainer').innerHTML = '<div class="online-indicator offline" id="onlineIndicator"><span class="status-dot"></span> Lokal</div>';
 
   // ── Build legend ──
   const legendContainer = document.getElementById('legendContainer');
