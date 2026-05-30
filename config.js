@@ -93,7 +93,7 @@ const CONFIG = {
     assembly: { label: "Samling",  useTeamColor: true, dashed: true, opacity: 0.75, defaultDuration: 30 },
     cheer:    { label: "Heja på",  useTeamCheerColor: true, defaultDuration: 40 },
     meal:     { label: "Mat",       color: "#f59e0b", lightBg: "#fef3c7", textColor: "#92400e", defaultDuration: 60 },
-    activity: { label: "Aktivitet", color: "#22C55E", lightBg: "#dcfce7", textColor: "#14532d", defaultDuration: 60 },
+    activity: { label: "Aktivitet", color: "#2563EB", lightBg: "#dbeafe", textColor: "#1e3a5f", defaultDuration: 60 },
     travel:   { label: "Resa",      color: "#ef4444", lightBg: "#fee2e2", textColor: "#991b1b", defaultDuration: 60 },
     other:    { label: "Övrigt",    color: "#9333ea", lightBg: "#faf5ff", textColor: "#7e22ce", defaultDuration: 60 }
   }
