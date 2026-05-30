@@ -11,7 +11,7 @@ body {
 
 /* ── Header ── */
 header {
-  background: linear-gradient(135deg, #0f1d45, #1a2a5e);
+  background: linear-gradient(135deg, #0F5A22, #1a2a5e);
   color: white;
   padding: 1.25rem 2rem;
   text-align: center;
@@ -22,7 +22,7 @@ header {
   gap: 1rem;
 }
 .header-logo {
-  width: 55px;
+  width: 75px;
   height: auto;
   flex-shrink: 0;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
