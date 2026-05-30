@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instruktioner — Sätta upp för ny turnering</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f8fafc;
+    color: #1e293b;
+    line-height: 1.7;
+    padding: 2rem 1rem 4rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 1.8rem; color: #0f1d45; margin-bottom: 0.5rem; }
+  h2 { font-size: 1.3rem; color: #0f1d45; margin-top: 2rem; margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.35rem; }
+  h3 { font-size: 1rem; color: #334155; margin-top: 1.25rem; margin-bottom: 0.5rem; }
+  p { margin-bottom: 0.75rem; }
+  .subtitle { color: #64748b; font-size: 1rem; margin-bottom: 2rem; }
+  .step {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .step-number {
+    display: inline-block;
+    background: #0f1d45;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 28px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+  }
+  .step-title {
+    font-weight: 700;
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  code {
+    background: #f1f5f9;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: #c2410c;
+  }
+  pre {
+    background: #1e293b;
+    color: #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    margin: 0.75rem 0;
+  }
+  pre .comment { color: #94a3b8; }
+  pre .string { color: #86efac; }
+  pre .key { color: #93c5fd; }
+  .tip {
+    background: #eff6ff;
+    border-left: 4px solid #3b82f6;
+    padding: 0.75rem 1rem;
+    border-radius: 0 8px 8px 0;
+    margin: 0.75rem 0;
+    font-size: 0.9rem;
+  }
+  .warning {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 0.75rem 1rem;
+    border-radius: 0 8px 8px 0;
+    margin: 0.75rem 0;
+    font-size: 0.9rem;
+  }
+  .file-tree {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    font-family: monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+  }
+  .file-tree .folder { color: #2563eb; font-weight: 600; }
+  .file-tree .editable { color: #16a34a; font-weight: 600; }
+  .file-tree .readonly { color: #64748b; }
+  ul { margin-left: 1.5rem; margin-bottom: 0.75rem; }
+  li { margin-bottom: 0.35rem; }
+  a { color: #2563eb; }
+</style>
+</head>
+<body>
+
+<h1>🏆 Sätta upp appen för en ny turnering</h1>
+<p class="subtitle">Steg-för-steg-guide — ingen programmeringskunskap behövs!</p>
+
+<h2>📁 Filöversikt</h2>
+<p>Så här ser filerna ut. Du behöver <strong>bara ändra i 1 fil</strong> (<code>config.js</code>):</p>
+<div class="file-tree">
+  <span class="folder">📂 din-mapp/</span><br>
+  ├── <span class="editable">config.js</span> ← <strong>ÄNDRA HÄR</strong> (all turneringsinfo)<br>
+  ├── <span class="readonly">styles.css</span> (gemensam design — rör ej)<br>
+  ├── <span class="readonly">index.html</span> (kalendersidan — rör ej)<br>
+  ├── <span class="readonly">roster.html</span> (lagsidan — rör ej)<br>
+  ├── <span class="readonly">info.html</span> (infosidan — rör ej)<br>
+  ├── <span class="readonly">setup.html</span> (den här sidan)<br>
+  └── <span class="editable">logo.png</span> ← byt till din klubbs logga
+</div>
+
+<h2>🚀 Komma igång</h2>
+
+<div class="step">
+  <div class="step-title"><span class="step-number">1</span> Öppna config.js</div>
+  <p>Högerklicka på filen <code>config.js</code> och välj <strong>"Öppna med" → "Textredigerare"</strong> (eller "Anteckningar" på Windows).</p>
+  <div class="tip">💡 På Mac: högerklicka → Öppna med → TextEdit. På Windows: högerklicka → Öppna med → Anteckningar.</div>
+</div>
+
+<div class="step">
+  <div class="step-title"><span class="step-number">2</span> Ändra turneringsnamn och klubb</div>
+  <p>Hitta dessa rader i toppen och ändra texten inom citattecken:</p>
+  <pre><span class="key">tournamentName</span>: <span class="string">"Örebrocupen"</span>,      <span class="comment">// ← Skriv turneringens namn</span>
+<span class="key">year</span>: <span class="string">2026</span>,                        <span class="comment">// ← Skriv årtalet</span>
+<span class="key">clubName</span>: <span class="string">"Segeltorps P15"</span>,        <span class="comment">// ← Skriv lagets/klubbens namn</span>
+<span class="key">subtitle</span>: <span class="string">"17–19 april 2026 • Örebro"</span>, <span class="comment">// ← Datum och plats</span></pre>
+  <div class="warning">⚠️ Se till att texten alltid har citattecken runt sig: <code>"text"</code>. Glöm inte kommatecknet efter varje rad!</div>
+</div>
+
+<div class="step">
+  <div class="step-title"><span class="step-number">3</span> Ändra dagar</div>
+  <p>Hitta <code>dates</code>-sektionen. Ändra, lägg till eller ta bort dagar:</p>
+  <pre><span class="key">dates</span>: [
+  { <span class="key">id</span>: <span class="string">"fri"</span>, <span class="key">label</span>: <span class="string">"Fredag 17 april"</span>, <span class="key">date</span>: <span class="string">"2026-04-17"</span> },
+  { <span class="key">id</span>: <span class="string">"sat"</span>, <span class="key">label</span>: <span class="string">"Lördag 18 april"</span>, <span class="key">date</span>: <span class="string">"2026-04-18"</span> },
+  { <span class="key">id</span>: <span class="string">"sun"</span>, <span class="key">label</span>: <span class="string">"Söndag 19 april"</span>, <span class="key">date</span>: <span class="string">"2026-04-19"</span> }
+],</pre>
+  <p><strong>Vill du lägga till en dag?</strong> Kopiera en rad och ändra <code>id</code>, <code>label</code> och <code>date</code>. Varje dag måste ha ett unikt <code>id</code> (kort namn, inga mellanslag). <code>date</code> ska vara i format <code>"ÅÅÅÅ-MM-DD"</code>.</p>
+  <p><strong>Vill du ha färre dagar?</strong> Ta bort hela raden (inkl. kommatecken). Se till att sista raden INTE har kommatecken.</p>
+</div>
+
+<div class="step">
+  <div class="step-title"><span class="step-number">4</span> Ändra lag</div>
+  <p>Hitta <code>teams</code>-sektionen. Här kan du ändra lagnamn, eller lägga till/ta bort lag:</p>
+  <pre><span class="key">teams</span>: [
+  {
+    <span class="key">id</span>: <span class="string">"blue"</span>,            <span class="comment">// Kort internt namn (inga mellanslag)</span>
+    <span class="key">name</span>: <span class="string">"Lag Blå"</span>,        <span class="comment">// Visningsnamn</span>
+    <span class="key">color</span>: <span class="string">"#2563eb"</span>,       <span class="comment">// Huvudfärg</span>
+    <span class="key">lightBg</span>: <span class="string">"#dbeafe"</span>,     <span class="comment">// Ljus bakgrund</span>
+    <span class="key">assemblyBg</span>: <span class="string">"#93bbfd"</span>,  <span class="comment">// Samlingsfärg</span>
+    <span class="key">textColor</span>: <span class="string">"#1e3a5f"</span>,   <span class="comment">// Textfärg</span>
+    <span class="key">cheerBg</span>: <span class="string">"#bfdbfe"</span>,     <span class="comment">// "Heja på"-bakgrund</span>
+    <span class="key">cheerBorder</span>: <span class="string">"#3b82f6"</span>  <span class="comment">// "Heja på"-kantlinje</span>
+  },
+  <span class="comment">// ... fler lag här</span>
+],</pre>
+  <div class="tip">💡 <strong>Bara ett lag?</strong> Ta bort det andra lagobjektet (allt mellan <code>{</code> och <code>}</code> inkl. kommatecken).<br>
+  💡 <strong>Vet inte vilka färger?</strong> Sök "color picker" på Google och kopiera hex-koden (t.ex. <code>#ff6600</code>).</div>
+</div>
+
+<div class="step">
+  <div class="step-title"><span class="step-number">5</span> Ändra standardhändelser</div>
+  <p>Hitta <code>defaultEvents</code>. Ändra till årets matcher, samlingar och andra händelser:</p>
+  <pre><span class="key">defaultEvents</span>: [
+  { <span class="key">id</span>: <span class="string">'e1'</span>, <span class="key">type</span>: <span class="string">'assembly'</span>, <span class="key">team</span>: <span class="string">'blue'</span>, <span class="key">day</span>: <span class="string">'fri'</span>,
+    <span class="key">start</span>: <span class="string">'17:00'</span>, <span class="key">end</span>: <span class="string">'17:30'</span>, <span class="key">venue</span>: <span class="string">'Hallnamn'</span>, <span class="key">desc</span>: <span class="string">''</span> },
+  { <span class="key">id</span>: <span class="string">'e2'</span>, <span class="key">type</span>: <span class="string">'match'</span>, <span class="key">team</span>: <span class="string">'blue'</span>, <span class="key">day</span>: <span class="string">'fri'</span>,
+    <span class="key">start</span>: <span class="string">'17:30'</span>, <span class="key">end</span>: <span class="string">'18:10'</span>, <span class="key">venue</span>: <span class="string">'Hallnamn'</span>, <span class="key">desc</span>: <span class="string">'Motståndare (hemma)'</span> },
+  <span class="comment">// ... fler händelser</span>
+],</pre>
+  <ul>
+    <li><code>id</code> — unikt id per händelse, t.ex. <code>'e1'</code>, <code>'e2'</code>, osv.</li>
+    <li><code>type</code> — kategori: <code>'match'</code>, <code>'assembly'</code>, <code>'cheer'</code>, <code>'meal'</code>, <code>'activity'</code>, <code>'travel'</code>, <code>'other'</code></li>
+    <li><code>team</code> — lag-id som matchar teams (t.ex. <code>'blue'</code>), eller <code>'both'</code></li>
+    <li><code>day</code> — dag-id som matchar dates (t.ex. <code>'fri'</code>)</li>
+    <li><code>start</code> / <code>end</code> — start- och sluttid i format <code>'HH:MM'</code></li>
+    <li><code>venue</code> — valfri plats (t.ex. hallnamn)</li>
+    <li><code>desc</code> — valfri beskrivning</li>
+  </ul>
+  <div class="tip">💡 <strong>Inga händelser än?</strong> Skriv <code>defaultEvents: [],</code> (tom lista). Du kan lägga till allt via kalendervyn senare.</div>
+</div>
+
+<div class="step">
+  <div class="step-title"><span class="step-number">6</span> Ändra Firebase (för delning mellan telefoner)</div>
+  <p>Om du vill att alla spelare/föräldrar ska se schemat på sina telefoner behöver du ett Firebase-projekt. <strong>Det är gratis.</strong></p>
+
+  <h3>Skapa Firebase-projekt (engångsjobb, ca 5 min):</h3>
+  <ol>
+    <li>Gå till <a href="https://console.firebase.google.com/" target="_blank">console.firebase.google.com</a></li>
+    <li>Logga in med ett Google-konto</li>
+    <li>Klicka <strong>"Lägg till projekt"</strong> → ge det ett namn → Fortsätt → Skapa</li>
+    <li>I vänstermenyn: <strong>Build → Realtime Database → Skapa databas</strong></li>
+    <li>Välj plats <strong>europe-west1</strong> → <strong>Starta i testläge</strong> → Aktivera</li>
+    <li>Gå till <strong>Projektinställningar</strong> (kugghjulet uppe till vänster)</li>
+    <li>Scrolla ner till <strong>"Dina appar"</strong> → klicka på webbikonen <strong>&lt;/&gt;</strong></li>
+    <li>Ge appen ett namn → <strong>Registrera app</strong></li>
+    <li>Du ser nu ett <code>firebaseConfig</code>-objekt. Kopiera värdena till <code>config.js</code>:</li>
+  </ol>
+  <pre><span class="key">firebase</span>: {
+  <span class="key">apiKey</span>: <span class="string">"din-api-key-här"</span>,
+  <span class="key">authDomain</span>: <span class="string">"ditt-projekt.firebaseapp.com"</span>,
+  <span class="key">databaseURL</span>: <span class="string">"https://ditt-projekt-default-rtdb.europe-west1.firebasedatabase.app"</span>,
+  <span class="key">projectId</span>: <span class="string">"ditt-projekt"</span>,
+  <span class="key">storageBucket</span>: <span class="string">"ditt-projekt.firebasestorage.app"</span>,
+  <span class="key">messagingSenderId</span>: <span class="string">"123456789"</span>,
+  <span class="key">appId</span>: <span class="string">"1:123:web:abc"</span>
+},</pre>
+
+  <h3>Ändra rumsnamn:</h3>
+  <pre><span class="key">roomName</span>: <span class="string">"segeltorps-gothia-2027"</span>,  <span class="comment">// Välj ett nytt namn per turnering!</span></pre>
+  <div class="warning">⚠️ <strong>Viktigt!</strong> Byt alltid rumsnamn mellan turneringar, annars blandas gammal och ny data ihop.</div>
+
+  <div class="tip">💡 <strong>Vill du inte använda Firebase?</strong> Lämna firebase-sektionen tom: <code>firebase: {},</code>. Appen fungerar ändå lokalt på varje enhet, men synkar inte mellan telefoner.</div>
+</div>
+
+<div class="step">
+  <div class="step-title"><span class="step-number">7</span> Byt logga</div>
+  <p>Byt ut filen <code>logo.png</code> mot din klubbs logga. Behåll samma filnamn, eller ändra i config.js:</p>
+  <pre><span class="key">logo</span>: <span class="string">"min-klubb-logo.png"</span>,</pre>
+</div>
+
+<div class="step">
+  <div class="step-title"><span class="step-number">8</span> Publicera (valfritt)</div>
+  <p>För att alla ska kunna nå sidan via en länk (t.ex. på mobilen):</p>
+  <ol>
+    <li>Skapa ett konto på <a href="https://github.com" target="_blank">github.com</a> (gratis)</li>
+    <li>Skapa ett nytt "repository" (arkiv)</li>
+    <li>Ladda upp alla filer (<code>config.js</code>, <code>styles.css</code>, <code>index.html</code>, <code>roster.html</code>, <code>info.html</code>, <code>logo.png</code>)</li>
+    <li>Gå till <strong>Settings → Pages → Source: Deploy from branch → Branch: main</strong> → Spara</li>
+    <li>Vänta ca 2 minuter → din sida syns på <code>https://ditt-användarnamn.github.io/ditt-repo/</code></li>
+  </ol>
+</div>
+
+<h2>❓ Vanliga frågor</h2>
+
+<div class="step">
+  <h3>Sidan visar ingenting / "fel" i webbläsaren</h3>
+  <p>Troligtvis ett stavfel i <code>config.js</code>. Vanligaste felen:</p>
+  <ul>
+    <li>Glömt ett kommatecken (<code>,</code>) efter en rad</li>
+    <li>Glömt citattecken (<code>"</code>) runt en text</li>
+    <li>Extra/saknad klammerparentes (<code>{</code> <code>}</code>) eller hakparentes (<code>[</code> <code>]</code>)</li>
+  </ul>
+  <p>Öppna webbläsarens konsol (<strong>F12 → Console</strong>) för att se exakt var felet är.</p>
+
+  <h3>Data från förra turneringen syns fortfarande</h3>
+  <p>Byt <code>roomName</code> i config.js till ett nytt namn. Rensar du även lokal data: öppna sidan → <strong>F12 → Console</strong> → skriv <code>localStorage.clear()</code> → tryck Enter → ladda om sidan.</p>
+
+  <h3>Kan jag ha fler än 2 lag?</h3>
+  <p>Ja! Lägg till fler objekt i <code>teams</code>-listan i config.js. Du behöver välja unika färger för varje lag.</p>
+
+  <h3>Kan jag lägga till händelser utan att ändra config.js?</h3>
+  <p>Ja! Klicka på <strong>"+ Lägg till händelse"</strong> i kalendervyn. Alla händelser (matcher, samlingar, mat, etc.) kan skapas och redigeras direkt i appen.</p>
+</div>
+
+<h2>✅ Checklista för ny turnering</h2>
+<div class="step">
+  <ul style="list-style: none; padding: 0; margin: 0;">
+    <li>☐ Ändra <code>tournamentName</code>, <code>year</code>, <code>clubName</code>, <code>subtitle</code></li>
+    <li>☐ Ändra <code>dates</code> (dagar turneringen pågår)</li>
+    <li>☐ Ändra <code>teams</code> (lagnamn, ev. färger)</li>
+    <li>☐ Ändra <code>defaultEvents</code> (årets matcher, samlingar och händelser)</li>
+    <li>☐ Ändra <code>roomName</code> (nytt namn per turnering!)</li>
+    <li>☐ Byt <code>logo.png</code> om det behövs</li>
+    <li>☐ Testa: öppna <code>index.html</code> i webbläsaren</li>
+    <li>☐ Ladda upp till GitHub Pages (om du vill dela via länk)</li>
+  </ul>
+</div>
+
+</body>
+</html>

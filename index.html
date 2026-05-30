@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalender</title>
+<script src="config.js"></script>
+<link rel="stylesheet" href="styles.css">
+<style>
+  :root {
+    --hour-height: 90px;
+    --timeline-start: 7;
+    --timeline-end: 23;
+  }
+
+  .toolbar {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+  }
+  .toolbar button {
+    padding: 0.5rem 1.25rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  .btn-add { background: #10b981; color: white; }
+  .btn-add:hover { background: #059669; }
+  .btn-filter { background: #e2e8f0; color: #475569; }
+  .btn-filter:hover { background: #cbd5e1; }
+  .btn-filter.active-all { background: #1e293b; color: white; }
+  .filter-group {
+    display: flex;
+    gap: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #cbd5e1;
+  }
+  .filter-group button {
+    border-radius: 0;
+    border: none;
+    border-right: 1px solid rgba(255,255,255,0.2);
+  }
+  .filter-group button:last-child { border-right: none; }
+
+  .online-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  .online-indicator.online { background: #d1fae5; color: #065f46; }
+  .online-indicator.offline { background: #f1f5f9; color: #64748b; }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .online .status-dot { background: #10b981; }
+  .offline .status-dot { background: #94a3b8; }
+
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0.75rem 2rem;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.15);
+  }
+
+  .calendar {
+    display: grid;
+    gap: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem 2rem;
+  }
+  .day-column {
+    position: relative;
+    border-left: 1px solid #e2e8f0;
+    border-right: 1px solid #e2e8f0;
+  }
+  .day-column:not(:first-child) { border-left: none; }
+  .day-header {
+    text-align: center;
+    padding: 0.75rem;
+    font-weight: 700;
+    font-size: 1rem;
+    background: #f1f5f9;
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .day-body {
+    position: relative;
+  }
+  .hour-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px solid #e2e8f0;
+    height: 0;
+    z-index: 0;
+  }
+  .hour-label {
+    position: absolute;
+    left: 4px;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    color: #94a3b8;
+    z-index: 1;
+    background: #f8fafc;
+    padding: 0 2px;
+  }
+  .event-block {
+    position: absolute;
+    left: 40px;
+    right: 4px;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 5;
+    transition: box-shadow 0.15s;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+  .event-block:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 6;
+  }
+  .event-time { font-weight: 700; font-size: 0.7rem; }
+  .event-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .event-detail { font-size: 0.65rem; opacity: 0.8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .event-block.compact { padding: 2px 8px; }
+  .event-block.compact .event-inline {
+    display: flex;
+    gap: 0.4rem;
+    align-items: baseline;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .event-block.compact .event-inline .event-time { flex-shrink: 0; }
+  .event-block.compact .event-inline .event-title { overflow: hidden; text-overflow: ellipsis; }
+  .event-block.col-left { left: 40px; right: calc(50% - 16px); }
+  .event-block.col-right { left: calc(50% + 24px); right: 4px; }
+
+  .collab-instructions ol {
+    margin-top: 0.5rem;
+    padding-left: 1.2rem;
+    line-height: 1.7;
+  }
+  .collab-instructions summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #475569;
+  }
+
+  @media (max-width: 768px) {
+    .calendar { grid-template-columns: 1fr !important; }
+    .day-column { border-left: 1px solid #e2e8f0; }
+    .event-block.col-left { left: 40px; right: calc(50% - 16px); }
+    .event-block.col-right { left: calc(50% + 24px); right: 4px; }
+  }
+
+  @media print {
+    .toolbar, .legend, .next-event-banner, .btn-share { display: none !important; }
+    .calendar { max-width: 100%; padding: 0; }
+    .event-block { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .modal-overlay { display: none !important; }
+    .day-column { break-inside: avoid; }
+  }
+
+  /* Next event banner */
+  .next-event-banner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0.5rem 1rem;
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .next-event-card {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    min-width: 200px;
+  }
+  .next-event-card .next-team {
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .next-event-card .next-countdown {
+    font-weight: 700;
+    color: #0f1d45;
+    white-space: nowrap;
+  }
+  .next-event-card .next-label {
+    color: #475569;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .next-event-card.no-events {
+    color: #94a3b8;
+    font-style: italic;
+    justify-content: center;
+  }
+
+  /* Now line */
+  .now-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #ef4444;
+    z-index: 8;
+    pointer-events: none;
+  }
+  .now-line::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ef4444;
+  }
+
+  /* Result badge */
+  .event-result {
+    font-weight: 700;
+    font-size: 0.7rem;
+    background: rgba(255,255,255,0.6);
+    padding: 0 0.3rem;
+    border-radius: 3px;
+    display: inline-block;
+    margin-top: 1px;
+  }
+
+  /* Share button */
+  .btn-share {
+    background: #6366f1;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .btn-share:hover { background: #4f46e5; }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="" alt="" class="header-logo" id="headerLogo">
+  <div class="header-text">
+    <h1 id="headerTitle"></h1>
+    <p id="headerSubtitle"></p>
+  </div>
+</header>
+
+<nav>
+  <a href="index.html" class="active">Kalender</a>
+  <a href="roster.html">Laguppställning</a>
+  <a href="info.html">Övrig info</a>
+</nav>
+
+<div class="toolbar" id="toolbar"></div>
+<div class="next-event-banner" id="nextEventBanner"></div>
+<div id="legendContainer"></div>
+<div class="calendar" id="calendar"></div>
+
+<!-- Modal: Add/Edit Event -->
+<div class="modal-overlay" id="eventModal">
+  <div class="modal">
+    <h2 id="eventModalTitle">Lägg till händelse</h2>
+    <input type="hidden" id="eventId">
+    <label>Typ</label>
+    <select id="eventType"></select>
+    <label>Lag</label>
+    <select id="eventTeam"></select>
+    <label>Dag</label>
+    <select id="eventDay"></select>
+    <label>Starttid</label>
+    <input type="time" id="eventStart">
+    <label>Sluttid</label>
+    <input type="time" id="eventEnd">
+    <label>Plats</label>
+    <input type="text" id="eventVenue" placeholder="T.ex. Almbyskolan, Hotellet...">
+    <label>Beskrivning</label>
+    <textarea id="eventDesc" placeholder="T.ex. Lunch på hotellet, Incheckning..."></textarea>
+    <label id="eventResultLabel" style="display:none">Resultat</label>
+    <input type="text" id="eventResult" placeholder="T.ex. 3–1" style="display:none">
+    <div class="modal-buttons">
+      <button class="btn-delete" id="eventDeleteBtn" onclick="deleteEvent()" style="display:none;margin-right:auto">Radera</button>
+      <button class="btn-cancel" onclick="closeModal('eventModal')">Avbryt</button>
+      <button class="btn-save" onclick="saveEvent()">Spara</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Collaboration -->
+<div class="modal-overlay" id="collabModal">
+  <div class="modal" style="max-width:520px">
+    <h2>Samarbeta online</h2>
+    <div id="collabConnected" style="display:none">
+      <div class="online-indicator online" style="margin-bottom:0.75rem;display:inline-flex"><span class="status-dot"></span> Ansluten</div>
+      <p style="margin-bottom:0.25rem">Rum: <strong id="collabRoomName"></strong></p>
+      <p style="font-size:0.85rem;color:#64748b">Alla som är anslutna till samma rum ser ändringar i realtid.</p>
+      <div class="modal-buttons">
+        <button class="btn-delete" onclick="disconnectFromRoom()" style="margin-right:auto">Koppla från</button>
+        <button class="btn-cancel" onclick="closeModal('collabModal')">Stäng</button>
+      </div>
+    </div>
+    <div id="collabSetup">
+      <label>Firebase-konfiguration (JSON)</label>
+      <textarea id="firebaseConfigInput" rows="6" style="font-family:monospace;font-size:0.8rem" placeholder='{ "apiKey": "...", ... }'></textarea>
+      <label>Rumsnamn</label>
+      <input type="text" id="roomNameInput" placeholder="t.ex. segeltorps-cup-2026">
+      <div class="modal-buttons">
+        <button class="btn-cancel" onclick="closeModal('collabModal')">Avbryt</button>
+        <button class="btn-save" onclick="startCollab()">Anslut</button>
+      </div>
+      <details class="collab-instructions" style="margin-top:1.25rem;font-size:0.8rem;color:#64748b">
+        <summary>Hur gör jag? (steg-för-steg)</summary>
+        <ol>
+          <li>Gå till <a href="https://console.firebase.google.com/" target="_blank" rel="noopener">console.firebase.google.com</a></li>
+          <li>Klicka <strong>"Lägg till projekt"</strong> → ge det ett namn → Skapa projekt</li>
+          <li>I vänstermenyn: <strong>Build → Realtime Database → Skapa databas</strong></li>
+          <li>Välj plats (europe-west1) → <strong>Starta i testläge</strong> → Aktivera</li>
+          <li>Gå till <strong>Projektinställningar</strong> (kugghjulet)</li>
+          <li>Scrolla ner till <strong>"Dina appar"</strong> → klicka på webbikonen <strong>&lt;/&gt;</strong></li>
+          <li>Ge appen ett namn → <strong>Registrera app</strong></li>
+          <li>Kopiera <code>firebaseConfig</code>-objektet och klistra in ovan</li>
+        </ol>
+      </details>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script>
+  // ── Apply config to page ──
+  document.title = getPageTitle('Kalender');
+  document.getElementById('headerLogo').src = CONFIG.logo;
+  document.getElementById('headerLogo').alt = CONFIG.clubName;
+  document.getElementById('headerTitle').textContent = getHeaderTitle();
+  document.getElementById('headerSubtitle').textContent = CONFIG.subtitle;
+
+  const HOUR_HEIGHT = CONFIG.hourHeight;
+  const TIMELINE_START = CONFIG.timelineStart;
+  const TIMELINE_END = CONFIG.timelineEnd;
+
+  document.documentElement.style.setProperty('--hour-height', HOUR_HEIGHT + 'px');
+  document.documentElement.style.setProperty('--timeline-start', TIMELINE_START);
+  document.documentElement.style.setProperty('--timeline-end', TIMELINE_END);
+
+  // ── Build TYPE_LABELS from config ──
+  const TYPE_LABELS = {};
+  for (const [key, cat] of Object.entries(CONFIG.eventCategories)) {
+    TYPE_LABELS[key] = cat.label;
+  }
+
+  // ── Inject dynamic CSS for team colors and categories ──
+  const dynamicStyles = document.createElement('style');
+  let css = '';
+  CONFIG.teams.forEach(team => {
+    css += `.btn-filter.active-${team.id} { background: ${team.color}; color: white; }\n`;
+    // Team-colored categories (match, assembly, etc.)
+    for (const [key, cat] of Object.entries(CONFIG.eventCategories)) {
+      if (cat.useTeamColor) {
+        const border = cat.dashed ? 'dashed' : 'solid';
+        const opacity = cat.opacity ? `opacity: ${cat.opacity};` : '';
+        css += `.event-block.type-${key}.team-${team.id} { background: ${cat.dashed ? team.assemblyBg : team.lightBg}; border-left: 4px ${border} ${team.color}; color: ${team.textColor}; ${opacity} }\n`;
+      }
+      if (cat.useTeamCheerColor) {
+        css += `.event-block.type-${key}.team-${team.id} { background: ${team.cheerBg}; border-left: 4px solid ${team.cheerBorder}; color: ${team.textColor}; }\n`;
+      }
+    }
+  });
+  for (const [key, cat] of Object.entries(CONFIG.eventCategories)) {
+    if (cat.color) {
+      css += `.event-block.type-${key} { background: ${cat.lightBg}; border-left: 4px solid ${cat.color}; color: ${cat.textColor}; }\n`;
+    }
+  }
+  dynamicStyles.textContent = css;
+  document.head.appendChild(dynamicStyles);
+
+  // ── Build toolbar (filter buttons) ──
+  const toolbar = document.getElementById('toolbar');
+  let filterHtml = '<div class="filter-group">';
+  filterHtml += '<button class="btn-filter active-all" id="filter-all" onclick="setFilter(\'all\')">Alla</button>';
+  CONFIG.teams.forEach(team => {
+    filterHtml += `<button class="btn-filter" id="filter-${team.id}" onclick="setFilter('${team.id}')">${escapeHtml(team.name)}</button>`;
+  });
+  filterHtml += '</div>';
+  filterHtml += '<div class="online-indicator offline" id="onlineIndicator"><span class="status-dot"></span> Lokal</div>';
+  filterHtml += '<button class="btn-add" onclick="openAddEventModal()">+ Lägg till händelse</button>';
+  if (navigator.share) {
+    filterHtml += '<button class="btn-share" onclick="sharePage()">📤 Dela</button>';
+  }
+  toolbar.innerHTML = filterHtml;
+
+  // ── Build legend ──
+  const legendContainer = document.getElementById('legendContainer');
+  let legendRow1 = '<div class="legend">';
+  for (const [key, cat] of Object.entries(CONFIG.eventCategories)) {
+    if (cat.useTeamColor || cat.useTeamCheerColor) {
+      CONFIG.teams.forEach(team => {
+        const bg = cat.useTeamCheerColor ? team.cheerBg : (cat.dashed ? team.assemblyBg : team.lightBg);
+        const border = cat.useTeamCheerColor ? team.cheerBorder : team.color;
+        const style = cat.dashed ? 'dashed' : 'solid';
+        legendRow1 += `<div class="legend-item"><div class="legend-swatch" style="background:${bg};border-left:3px ${style} ${border}"></div>${escapeHtml(team.name)} – ${escapeHtml(cat.label.toLowerCase())}</div>`;
+      });
+    }
+  }
+  legendRow1 += '</div>';
+
+  let legendRow2 = '<div class="legend">';
+  for (const [key, cat] of Object.entries(CONFIG.eventCategories)) {
+    if (!cat.useTeamColor && !cat.useTeamCheerColor) {
+      legendRow2 += `<div class="legend-item"><div class="legend-swatch" style="background:${cat.lightBg};border-left:3px solid ${cat.color}"></div>${escapeHtml(cat.label)}</div>`;
+    }
+  }
+  legendRow2 += '</div>';
+  legendContainer.innerHTML = legendRow1 + legendRow2;
+
+  // ── Build calendar columns from config dates ──
+  const calendar = document.getElementById('calendar');
+  calendar.style.gridTemplateColumns = `repeat(${CONFIG.dates.length}, 1fr)`;
+  CONFIG.dates.forEach(d => {
+    const col = document.createElement('div');
+    col.className = 'day-column';
+    col.id = 'day-' + d.id;
+    col.innerHTML = `<div class="day-header">${escapeHtml(d.label)}</div><div class="day-body" id="body-${d.id}"></div>`;
+    // Click on empty area to create event at that time
+    col.querySelector('.day-body').addEventListener('click', function(e) {
+      if (e.target !== this) return;
+      const rect = this.getBoundingClientRect();
+      const y = e.clientY - rect.top + this.scrollTop;
+      const minutes = Math.round((y / HOUR_HEIGHT + TIMELINE_START) * 60);
+      const snapped = Math.round(minutes / 15) * 15;
+      openAddEventModal(d.id, minutesToTime(snapped));
+    });
+    calendar.appendChild(col);
+  });
+
+  // ── Populate modal dropdowns from config ──
+  function populateSelect(id, items) {
+    const sel = document.getElementById(id);
+    sel.innerHTML = '';
+    items.forEach(item => {
+      const opt = document.createElement('option');
+      opt.value = item.value;
+      opt.textContent = item.label;
+      sel.appendChild(opt);
+    });
+  }
+
+  // Day selects
+  const dayOptions = CONFIG.dates.map(d => ({ value: d.id, label: d.label }));
+  populateSelect('eventDay', dayOptions);
+
+  // Team selects
+  const teamOptions = CONFIG.teams.map(t => ({ value: t.id, label: t.name }));
+  populateSelect('eventTeam', [{ value: 'both', label: 'Båda lagen' }, ...teamOptions]);
+
+  // Event type select
+  const eventTypeOptions = [];
+  for (const [key, cat] of Object.entries(CONFIG.eventCategories)) {
+    eventTypeOptions.push({ value: key, label: cat.label });
+  }
+  populateSelect('eventType', eventTypeOptions);
+
+  // Room name default
+  document.getElementById('roomNameInput').value = CONFIG.roomName;
+
+  // ── Embedded data (populated when exported via "Dela som HTML") ──
+  const EMBEDDED_DATA = null;
+  const DEFAULT_EVENTS = CONFIG.defaultEvents || [];
+
+  // ── State ──
+  let events = [];
+  let activeFilter = 'all';
+
+  // Restore saved team filter
+  const savedFilter = localStorage.getItem('orebrocup_filter');
+  if (savedFilter && (savedFilter === 'all' || CONFIG.teams.some(t => t.id === savedFilter))) {
+    activeFilter = savedFilter;
+  }
+
+  function setFilter(filter) {
+    activeFilter = filter;
+    localStorage.setItem('orebrocup_filter', filter);
+    document.getElementById('filter-all').className = 'btn-filter' + (filter === 'all' ? ' active-all' : '');
+    CONFIG.teams.forEach(t => {
+      document.getElementById('filter-' + t.id).className = 'btn-filter' + (filter === t.id ? ' active-' + t.id : '');
+    });
+    render();
+    updateNextEventBanner();
+  }
+
+  function loadState() {
+    const savedEvents = localStorage.getItem('orebrocup_events');
+    try {
+      if (EMBEDDED_DATA) {
+        events = savedEvents ? JSON.parse(savedEvents) : EMBEDDED_DATA.events;
+      } else {
+        events = savedEvents ? JSON.parse(savedEvents) : JSON.parse(JSON.stringify(DEFAULT_EVENTS));
+      }
+    } catch {
+      events = JSON.parse(JSON.stringify(DEFAULT_EVENTS));
+    }
+  }
+
+  function saveState() {
+    localStorage.setItem('orebrocup_events', JSON.stringify(events));
+    syncToFirebase();
+  }
+
+  function resetAll() {
+    if (!confirm('Vill du återställa allt? Alla ändringar och tillagda händelser raderas.')) return;
+    localStorage.removeItem('orebrocup_events');
+    loadState();
+    render();
+  }
+
+  // ── Time helpers ──
+  function timeToMinutes(t) {
+    const [h, m] = t.split(':').map(Number);
+    return h * 60 + m;
+  }
+  function minutesToTime(m) {
+    const h = Math.floor(m / 60);
+    const mi = m % 60;
+    return `${String(h).padStart(2,'0')}:${String(mi).padStart(2,'0')}`;
+  }
+  function minutesToTop(m) {
+    return ((m / 60) - TIMELINE_START) * HOUR_HEIGHT;
+  }
+  function minutesToHeight(dur) {
+    return (dur / 60) * HOUR_HEIGHT;
+  }
+
+  // ── Rendering ──
+  function render() {
+    CONFIG.dates.forEach(dateObj => {
+      const day = dateObj.id;
+      const body = document.getElementById('body-' + day);
+      body.innerHTML = '';
+      body.style.height = ((TIMELINE_END - TIMELINE_START) * HOUR_HEIGHT) + 'px';
+
+      // Hour lines
+      for (let h = TIMELINE_START; h <= TIMELINE_END; h++) {
+        const line = document.createElement('div');
+        line.className = 'hour-line';
+        line.style.top = (h - TIMELINE_START) * HOUR_HEIGHT + 'px';
+        body.appendChild(line);
+        if (h < TIMELINE_END) {
+          const label = document.createElement('div');
+          label.className = 'hour-label';
+          label.style.top = (h - TIMELINE_START) * HOUR_HEIGHT + 'px';
+          label.textContent = `${String(h).padStart(2,'0')}:00`;
+          body.appendChild(label);
+        }
+      }
+
+      const blocks = [];
+
+      // All events
+      const dayEvents = events.filter(e => e.day === day && (activeFilter === 'all' || e.team === activeFilter || e.team === 'both'));
+      dayEvents.forEach(ev => {
+        const typeName = TYPE_LABELS[ev.type] || ev.type;
+        const title = ev.desc || typeName;
+        const detailParts = [];
+        if (ev.venue) detailParts.push(ev.venue);
+        if (ev.team !== 'both') detailParts.push(getTeamName(ev.team));
+        blocks.push({
+          type: ev.type, team: ev.team,
+          startMin: timeToMinutes(ev.start), endMin: timeToMinutes(ev.end),
+          eventId: ev.id,
+          label: title,
+          detail: detailParts.join(' • '),
+          result: ev.result || '',
+          venue: ev.venue || '',
+        });
+      });
+
+      assignColumns(blocks);
+
+      blocks.forEach(b => {
+        const el = document.createElement('div');
+        const top = minutesToTop(b.startMin);
+        const height = Math.max(minutesToHeight(b.endMin - b.startMin), 20);
+        const durationMin = b.endMin - b.startMin;
+        const isCompact = durationMin <= 25;
+
+        const cat = CONFIG.eventCategories[b.type];
+        let cssClass = 'event-block';
+        if (isCompact) cssClass += ' compact';
+        // Team-colored categories get type + team class; others just type class
+        if (cat && (cat.useTeamColor || cat.useTeamCheerColor)) {
+          cssClass += ` type-${b.type} team-${b.team}`;
+        } else {
+          cssClass += ` type-${b.type}`;
+        }
+        if (b.col === 'left') cssClass += ' col-left';
+        else if (b.col === 'right') cssClass += ' col-right';
+
+        el.className = cssClass;
+        el.style.top = top + 'px';
+        el.style.height = height + 'px';
+
+        if (isCompact) {
+          el.innerHTML = `<div class="event-inline"><span class="event-time">${minutesToTime(b.startMin)}–${minutesToTime(b.endMin)}</span><span class="event-title">${escapeHtml(b.label)}</span>${b.result ? `<span class="event-result">${escapeHtml(b.result)}</span>` : ''}</div>`;
+        } else {
+          let detailHtml = '';
+          if (b.detail) {
+            // Make venue part a map link
+            const parts = b.detail.split(' • ');
+            const linkedParts = parts.map(p => {
+              if (b.venue && p === b.venue) {
+                const q = encodeURIComponent(b.venue);
+                return `<a href="https://maps.google.com/?q=${q}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline" onclick="event.stopPropagation()">${escapeHtml(p)}</a>`;
+              }
+              return escapeHtml(p);
+            });
+            detailHtml = `<div class="event-detail">${linkedParts.join(' • ')}</div>`;
+          }
+          el.innerHTML = `<div class="event-time">${minutesToTime(b.startMin)}–${minutesToTime(b.endMin)}</div><div class="event-title">${escapeHtml(b.label)}</div>${b.result ? `<div class="event-result">${escapeHtml(b.result)}</div>` : ''}${detailHtml}`;
+        }
+
+        el.addEventListener('click', () => openEditEventModal(b.eventId));
+        body.appendChild(el);
+      });
+
+      // Now line
+      drawNowLine(body, dateObj);
+    });
+    updateNextEventBanner();
+  }
+
+  function drawNowLine(body, dateObj) {
+    if (!dateObj.date) return;
+    const now = new Date();
+    const today = now.toISOString().slice(0, 10);
+    if (dateObj.date !== today) return;
+    const nowMin = now.getHours() * 60 + now.getMinutes();
+    if (nowMin < TIMELINE_START * 60 || nowMin > TIMELINE_END * 60) return;
+    const line = document.createElement('div');
+    line.className = 'now-line';
+    line.style.top = minutesToTop(nowMin) + 'px';
+    body.appendChild(line);
+  }
+
+  function getTodayDayId() {
+    const today = new Date().toISOString().slice(0, 10);
+    const match = CONFIG.dates.find(d => d.date === today);
+    return match ? match.id : null;
+  }
+
+  function assignColumns(blocks) {
+    if (CONFIG.teams.length < 2) return;
+    const teamIds = CONFIG.teams.map(t => t.id);
+    const teamBlocks = {};
+    teamIds.forEach(id => { teamBlocks[id] = blocks.filter(b => b.team === id); });
+
+    // Check if any pair of teams overlap
+    let hasOverlap = false;
+    for (let i = 0; i < teamIds.length && !hasOverlap; i++) {
+      for (let j = i + 1; j < teamIds.length && !hasOverlap; j++) {
+        for (const a of teamBlocks[teamIds[i]]) {
+          for (const b of teamBlocks[teamIds[j]]) {
+            if (a.startMin < b.endMin && b.startMin < a.endMin) {
+              hasOverlap = true;
+              break;
+            }
+          }
+          if (hasOverlap) break;
+        }
+      }
+    }
+
+    if (hasOverlap && teamIds.length === 2) {
+      teamBlocks[teamIds[0]].forEach(b => b.col = 'left');
+      teamBlocks[teamIds[1]].forEach(b => b.col = 'right');
+    }
+  }
+
+  function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  // ── Event Modal ──
+  function updateResultVisibility() {
+    const type = document.getElementById('eventType').value;
+    const show = type === 'match';
+    document.getElementById('eventResult').style.display = show ? '' : 'none';
+    document.getElementById('eventResultLabel').style.display = show ? '' : 'none';
+  }
+
+  document.getElementById('eventType').addEventListener('change', updateResultVisibility);
+
+  function openAddEventModal(prefillDay, prefillTime) {
+    const type = Object.keys(CONFIG.eventCategories)[0];
+    const cat = CONFIG.eventCategories[type];
+    const startTime = prefillTime || '12:00';
+    const endMin = timeToMinutes(startTime) + (cat.defaultDuration || 60);
+    document.getElementById('eventId').value = '';
+    document.getElementById('eventType').value = type;
+    document.getElementById('eventTeam').value = activeFilter !== 'all' ? activeFilter : 'both';
+    document.getElementById('eventDay').value = prefillDay || CONFIG.dates[0].id;
+    document.getElementById('eventStart').value = startTime;
+    document.getElementById('eventEnd').value = minutesToTime(Math.min(endMin, TIMELINE_END * 60));
+    document.getElementById('eventVenue').value = '';
+    document.getElementById('eventDesc').value = '';
+    document.getElementById('eventResult').value = '';
+    updateResultVisibility();
+    document.getElementById('eventModalTitle').textContent = 'Lägg till händelse';
+    document.getElementById('eventDeleteBtn').style.display = 'none';
+    document.getElementById('eventModal').classList.add('active');
+  }
+
+  function openEditEventModal(eventId) {
+    const ev = events.find(e => e.id === eventId);
+    if (!ev) return;
+    document.getElementById('eventId').value = ev.id;
+    document.getElementById('eventType').value = ev.type;
+    document.getElementById('eventTeam').value = ev.team;
+    document.getElementById('eventDay').value = ev.day;
+    document.getElementById('eventStart').value = ev.start;
+    document.getElementById('eventEnd').value = ev.end;
+    document.getElementById('eventVenue').value = ev.venue || '';
+    document.getElementById('eventDesc').value = ev.desc || '';
+    document.getElementById('eventResult').value = ev.result || '';
+    updateResultVisibility();
+    document.getElementById('eventModalTitle').textContent = 'Redigera händelse';
+    document.getElementById('eventDeleteBtn').style.display = 'inline-block';
+    document.getElementById('eventModal').classList.add('active');
+  }
+
+  function saveEvent() {
+    const id = document.getElementById('eventId').value;
+    const data = {
+      type: document.getElementById('eventType').value,
+      team: document.getElementById('eventTeam').value,
+      day: document.getElementById('eventDay').value,
+      start: document.getElementById('eventStart').value,
+      end: document.getElementById('eventEnd').value,
+      venue: document.getElementById('eventVenue').value.trim(),
+      desc: document.getElementById('eventDesc').value.trim(),
+      result: document.getElementById('eventResult').value.trim(),
+    };
+    if (!data.start || !data.end) { alert('Fyll i start- och sluttid.'); return; }
+    if (timeToMinutes(data.start) >= timeToMinutes(data.end)) { alert('Sluttid måste vara efter starttid.'); return; }
+    if (id) {
+      const ev = events.find(e => e.id === id);
+      if (ev) Object.assign(ev, data);
+    } else {
+      data.id = 'e' + Date.now();
+      events.push(data);
+    }
+    saveState();
+    render();
+    closeModal('eventModal');
+  }
+
+  function deleteEvent() {
+    const id = document.getElementById('eventId').value;
+    if (!id) return;
+    if (!confirm('Vill du radera denna händelse?')) return;
+    events = events.filter(e => e.id !== id);
+    saveState();
+    render();
+    closeModal('eventModal');
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.classList.remove('active');
+    });
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+    }
+  });
+
+  // ── Auto end-time when type changes ──
+  document.getElementById('eventType').addEventListener('change', function() {
+    const cat = CONFIG.eventCategories[this.value];
+    if (!cat || !cat.defaultDuration) return;
+    const startVal = document.getElementById('eventStart').value;
+    if (!startVal) return;
+    const endMin = timeToMinutes(startVal) + cat.defaultDuration;
+    document.getElementById('eventEnd').value = minutesToTime(Math.min(endMin, TIMELINE_END * 60));
+  });
+
+  document.getElementById('eventStart').addEventListener('change', function() {
+    const type = document.getElementById('eventType').value;
+    const cat = CONFIG.eventCategories[type];
+    if (!cat || !cat.defaultDuration) return;
+    const endMin = timeToMinutes(this.value) + cat.defaultDuration;
+    document.getElementById('eventEnd').value = minutesToTime(Math.min(endMin, TIMELINE_END * 60));
+  });
+
+  // ── Export as self-contained HTML ──
+  function exportAsHtml() {
+    const html = document.documentElement.outerHTML;
+    const dataObj = JSON.stringify({ events });
+    const patched = html.replace(/const EMBEDDED_DATA = .*?;/, 'const EMBEDDED_DATA = ' + dataObj + ';');
+    const blob = new Blob(['<!DOCTYPE html>\n' + patched], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${CONFIG.tournamentName.toLowerCase()}-${CONFIG.year}-kalender.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ── Collaboration (Firebase) ──
+  let firebaseApp = null;
+  let firebaseDb = null;
+  let roomRef = null;
+  let isOnline = false;
+  let lastSyncTime = 0;
+
+  function openCollabModal() {
+    const config = localStorage.getItem('orebrocup_firebase_config') || JSON.stringify(CONFIG.firebase, null, 2);
+    if (config) document.getElementById('firebaseConfigInput').value = config;
+    const room = localStorage.getItem('orebrocup_room') || CONFIG.roomName;
+    if (room) document.getElementById('roomNameInput').value = room;
+    if (isOnline) {
+      document.getElementById('collabConnected').style.display = 'block';
+      document.getElementById('collabSetup').style.display = 'none';
+      document.getElementById('collabRoomName').textContent = localStorage.getItem('orebrocup_room') || '';
+    } else {
+      document.getElementById('collabConnected').style.display = 'none';
+      document.getElementById('collabSetup').style.display = 'block';
+    }
+    document.getElementById('collabModal').classList.add('active');
+  }
+
+  async function startCollab() {
+    const configStr = document.getElementById('firebaseConfigInput').value.trim();
+    const roomName = document.getElementById('roomNameInput').value.trim();
+    if (!configStr || !roomName) { alert('Fyll i Firebase-konfiguration och rumsnamn.'); return; }
+    let config;
+    try { config = JSON.parse(configStr); } catch { alert('Ogiltig JSON i Firebase-konfigurationen.'); return; }
+    if (!config.databaseURL) { alert('Firebase-konfigurationen saknar databaseURL.'); return; }
+    try {
+      localStorage.setItem('orebrocup_firebase_config', configStr);
+      localStorage.setItem('orebrocup_room', roomName);
+      await connectToRoom(config, roomName);
+      closeModal('collabModal');
+    } catch (err) { alert('Kunde inte ansluta: ' + err.message); }
+  }
+
+  async function connectToRoom(config, roomName) {
+    if (firebaseApp) { try { await firebaseApp.delete(); } catch {} }
+    firebaseApp = firebase.initializeApp(config);
+    firebaseDb = firebase.database();
+    roomRef = firebaseDb.ref('rooms/' + roomName);
+    const snapshot = await roomRef.once('value');
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      events = data.events || JSON.parse(JSON.stringify(DEFAULT_EVENTS));
+      localStorage.setItem('orebrocup_events', JSON.stringify(events));
+      render();
+    } else {
+      await roomRef.set({ events, lastUpdated: Date.now() });
+    }
+    roomRef.on('value', (snapshot) => {
+      const data = snapshot.val();
+      if (!data) return;
+      if (data.lastUpdated && Math.abs(data.lastUpdated - lastSyncTime) < 2000) return;
+      events = data.events || [];
+      localStorage.setItem('orebrocup_events', JSON.stringify(events));
+      render();
+    });
+    isOnline = true;
+    updateOnlineIndicator();
+  }
+
+  function disconnectFromRoom() {
+    if (roomRef) roomRef.off();
+    if (firebaseApp) { try { firebaseApp.delete(); } catch {} firebaseApp = null; }
+    firebaseDb = null; roomRef = null; isOnline = false;
+    updateOnlineIndicator();
+    closeModal('collabModal');
+  }
+
+  function syncToFirebase() {
+    if (isOnline && roomRef) {
+      lastSyncTime = Date.now();
+      roomRef.set({ events, lastUpdated: lastSyncTime })
+        .catch((err) => {
+          console.error('Firebase sync failed:', err);
+          const el = document.getElementById('onlineIndicator');
+          if (el) { el.className = 'online-indicator offline'; el.innerHTML = '<span class="status-dot"></span> Synk misslyckades'; }
+        });
+    }
+  }
+
+  function updateOnlineIndicator() {
+    const el = document.getElementById('onlineIndicator');
+    if (!el) return;
+    if (isOnline) {
+      const room = localStorage.getItem('orebrocup_room') || '';
+      el.className = 'online-indicator online';
+      el.innerHTML = '<span class="status-dot"></span> Online: ' + escapeHtml(room);
+    } else {
+      el.className = 'online-indicator offline';
+      el.innerHTML = '<span class="status-dot"></span> Lokal';
+    }
+  }
+
+  // ── Next event banner ──
+  function updateNextEventBanner() {
+    const banner = document.getElementById('nextEventBanner');
+    const now = new Date();
+    const todayId = getTodayDayId();
+    const nowMin = now.getHours() * 60 + now.getMinutes();
+    const todayDate = now.toISOString().slice(0, 10);
+    const dayOrder = CONFIG.dates.map(d => d.id);
+    const todayIndex = dayOrder.indexOf(todayId);
+
+    function getNextForTeam(teamId) {
+      // Search all days in order; for today, skip events that have ended
+      for (let i = 0; i < dayOrder.length; i++) {
+        const dayId = dayOrder[i];
+        const dateObj = CONFIG.dates[i];
+        const isToday = dayId === todayId;
+        // Skip past days using actual dates
+        if (dateObj.date && dateObj.date < todayDate) continue;
+        const candidates = events
+          .filter(e => e.day === dayId && (e.team === teamId || e.team === 'both') && (!isToday || timeToMinutes(e.end) > nowMin))
+          .sort((a, b) => timeToMinutes(a.start) - timeToMinutes(b.start));
+        if (candidates.length > 0) return candidates[0];
+      }
+      return null;
+    }
+
+    function formatCountdown(ev) {
+      const isToday = ev.day === todayId;
+      const startMin = timeToMinutes(ev.start);
+      if (isToday) {
+        const diff = startMin - nowMin;
+        return diff > 0 ? `om ${diff} min` : 'nu';
+      }
+      const dayLabel = CONFIG.dates.find(d => d.id === ev.day);
+      return dayLabel ? `${dayLabel.label.split(' ')[0]} ${ev.start}` : ev.start;
+    }
+
+    let cards = '';
+    if (activeFilter === 'all') {
+      CONFIG.teams.forEach(team => {
+        const next = getNextForTeam(team.id);
+        if (next) {
+          const countdown = formatCountdown(next);
+          const typeName = TYPE_LABELS[next.type] || next.type;
+          const label = next.desc || typeName;
+          cards += `<div class="next-event-card"><span class="next-team" style="background:${team.lightBg};color:${team.textColor}">${escapeHtml(team.name)}</span><span class="next-countdown">${escapeHtml(countdown)}</span><span class="next-label">${escapeHtml(label)}${next.venue ? ' • ' + escapeHtml(next.venue) : ''}</span></div>`;
+        }
+      });
+    } else {
+      const team = getTeam(activeFilter);
+      if (team) {
+        const next = getNextForTeam(team.id);
+        if (next) {
+          const countdown = formatCountdown(next);
+          const typeName = TYPE_LABELS[next.type] || next.type;
+          const label = next.desc || typeName;
+          cards += `<div class="next-event-card"><span class="next-team" style="background:${team.lightBg};color:${team.textColor}">${escapeHtml(team.name)}</span><span class="next-countdown">${escapeHtml(countdown)}</span><span class="next-label">${escapeHtml(label)}${next.venue ? ' • ' + escapeHtml(next.venue) : ''}</span></div>`;
+        }
+      }
+    }
+
+    if (!cards && events.length > 0) {
+      cards = '<div class="next-event-card no-events">Inga fler händelser</div>';
+    }
+    banner.innerHTML = cards;
+  }
+
+  // ── Share ──
+  function sharePage() {
+    if (navigator.share) {
+      navigator.share({
+        title: getHeaderTitle(),
+        text: CONFIG.subtitle,
+        url: window.location.href,
+      }).catch(() => {});
+    }
+  }
+
+  // ── Init ──
+  loadState();
+  setFilter(activeFilter);
+
+  // Refresh now-line and next-event banner every minute
+  setInterval(() => { render(); }, 60000);
+
+  (async function autoReconnect() {
+    const config = CONFIG.firebase;
+    const room = CONFIG.roomName;
+    if (config && config.databaseURL && room) {
+      try { await connectToRoom(config, room); } catch { }
+    }
+  })();
+</script>
+
+</body>
+</html>

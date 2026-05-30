@@ -1,0 +1,129 @@
+/* ── Shared styles for all pages ── */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f8fafc;
+  color: #1e293b;
+  line-height: 1.5;
+}
+
+/* ── Header ── */
+header {
+  background: linear-gradient(135deg, #0f1d45, #1a2a5e);
+  color: white;
+  padding: 1.25rem 2rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.header-logo {
+  width: 55px;
+  height: auto;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+.header-text { text-align: left; }
+header h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
+header p { opacity: 0.85; font-size: 0.95rem; }
+
+/* ── Navigation ── */
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.75rem 2rem;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+}
+nav a {
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #0f1d45;
+  background: #d6dce8;
+  transition: all 0.15s;
+}
+nav a:hover { background: #bcc5d6; }
+nav a.active { background: #0f1d45; color: white; }
+
+/* ── Modal (shared across pages) ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 100;
+  justify-content: center;
+  align-items: center;
+}
+.modal-overlay.active { display: flex; }
+
+.modal {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.modal h2 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+.modal label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 0.75rem;
+  margin-bottom: 0.25rem;
+  color: #475569;
+}
+.modal input, .modal select, .modal textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+.modal textarea { resize: vertical; min-height: 60px; }
+.modal-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  justify-content: flex-end;
+}
+.modal-buttons button {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.btn-save { background: #2563eb; color: white; }
+.btn-save:hover { background: #1d4ed8; }
+.btn-cancel { background: #e2e8f0; color: #475569; }
+.btn-cancel:hover { background: #cbd5e1; }
+.btn-delete { background: #ef4444; color: white; }
+.btn-delete:hover { background: #dc2626; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  header h1 { font-size: 1.2rem; }
+}
+
+@media print {
+  body { background: white; font-size: 11px; }
+  header { padding: 0.75rem; background: #0f1d45 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  nav { display: none !important; }
+}
