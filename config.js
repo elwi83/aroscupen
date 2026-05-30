@@ -10,10 +10,10 @@
 const CONFIG = {
 
   // ── Turneringsnamn och klubb ──
-  tournamentName: "Örebrocupen",
+  tournamentName: "Aroscupen",
   year: 2026,
-  clubName: "Segeltorps P15",
-  subtitle: "17–19 april 2026 • Örebro",
+  clubName: "Stuvsta IF P15-1",
+  subtitle: "13–15 juni 2026 • Västerås",
   logo: "logo.png",        // Logotyp-fil (lägg i samma mapp)
 
   // ── Dagar ──
@@ -71,14 +71,14 @@ const CONFIG = {
   // Följ instruktionerna i setup.html för att skapa ett Firebase-projekt.
   // Klistra in dina värden här.
   firebase: {
-  apiKey: "AIzaSyDbDHpx53Bb3bOHhrtlC9JuRfUwcmnypDc",
-  authDomain: "aroscupen-45279.firebaseapp.com",
-  databaseURL: "https://aroscupen-45279-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "aroscupen-45279",
-  storageBucket: "aroscupen-45279.firebasestorage.app",
-  messagingSenderId: "218772065424",
-  appId: "1:218772065424:web:de7a0c4ed9f61c29c6dc15",
-  measurementId: "G-K63JH4YGPN"
+    apiKey: "AIzaSyDbDHpx53Bb3bOHhrtlC9JuRfUwcmnypDc",
+    authDomain: "aroscupen-45279.firebaseapp.com",
+    databaseURL: "https://aroscupen-45279-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "aroscupen-45279",
+    storageBucket: "aroscupen-45279.firebasestorage.app",
+    messagingSenderId: "218772065424",
+    appId: "1:218772065424:web:de7a0c4ed9f61c29c6dc15",
+    measurementId: "G-K63JH4YGPN"
   },
 
   // Rumsnamn — alla som delar samma rumsnamn ser varandras ändringar.
