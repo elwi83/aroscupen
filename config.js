@@ -19,9 +19,9 @@ const CONFIG = {
   // ── Dagar ──
   // Lägg till eller ta bort dagar. id = kort namn, label = visas i kalendern.
   dates: [
-    { id: "fri", label: "Fredag 17 april", date: "2026-04-17" },
-    { id: "sat", label: "Lördag 18 april", date: "2026-04-18" },
-    { id: "sun", label: "Söndag 19 april", date: "2026-04-19" }
+    { id: "sat", label: "Lördag 13 juni", date: "2026-06-13" },
+    { id: "sun", label: "Lördag 14 juni", date: "2026-06-14" },
+    { id: "mon", label: "Söndag 15 juni", date: "2026-06-15" }
   ],
 
   // ── Lag ──
@@ -71,14 +71,14 @@ const CONFIG = {
   // Följ instruktionerna i setup.html för att skapa ett Firebase-projekt.
   // Klistra in dina värden här.
   firebase: {
-    apiKey: "AIzaSyB3i97Uls9GZkuP3bxHKwZLfqWWqKGIPuU",
-    authDomain: "orebrocupen-2026.firebaseapp.com",
-    databaseURL: "https://orebrocupen-2026-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "orebrocupen-2026",
-    storageBucket: "orebrocupen-2026.firebasestorage.app",
-    messagingSenderId: "953715494179",
-    appId: "1:953715494179:web:32c96d70ea7c8c215d1096",
-    measurementId: "G-6HM3BFTH3J"
+  apiKey: "AIzaSyDbDHpx53Bb3bOHhrtlC9JuRfUwcmnypDc",
+  authDomain: "aroscupen-45279.firebaseapp.com",
+  databaseURL: "https://aroscupen-45279-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "aroscupen-45279",
+  storageBucket: "aroscupen-45279.firebasestorage.app",
+  messagingSenderId: "218772065424",
+  appId: "1:218772065424:web:de7a0c4ed9f61c29c6dc15",
+  measurementId: "G-K63JH4YGPN"
   },
 
   // Rumsnamn — alla som delar samma rumsnamn ser varandras ändringar.
