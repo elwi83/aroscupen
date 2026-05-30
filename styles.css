@@ -1,17 +1,40 @@
 /* ── Shared styles for all pages ── */
 
+:root {
+  --primary: #0F5A22;
+  --primary-dark: #13401A;
+  --primary-light: #2F8A3D;
+  --accent: #4CAF50;
+
+  --background: #F6F8F6;
+  --surface: #FFFFFF;
+
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+
+  --border: #E5E9E5;
+
+  --success: #22C55E;
+  --info: #2563EB;
+  --warning: #F59E0B;
+  --error: #DC2626;
+
+  --nav-pill: #D4E8D7;
+  --nav-pill-hover: #BCDBC0;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #f8fafc;
-  color: #1e293b;
+  background: var(--background);
+  color: var(--text-primary);
   line-height: 1.5;
 }
 
 /* ── Header ── */
 header {
-  background: linear-gradient(135deg, #0F5A22, #0F5A22);
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
   color: white;
   padding: 1.25rem 2rem;
   text-align: center;
@@ -22,7 +45,7 @@ header {
   gap: 1rem;
 }
 .header-logo {
-  width: 75px;
+  width: 55px;
   height: auto;
   flex-shrink: 0;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
@@ -37,8 +60,8 @@ nav {
   justify-content: center;
   gap: 1rem;
   padding: 0.75rem 2rem;
-  background: white;
-  border-bottom: 1px solid #e2e8f0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
 }
 nav a {
   padding: 0.4rem 1rem;
@@ -46,12 +69,12 @@ nav a {
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #0f1d45;
-  background: #d6dce8;
+  color: var(--primary);
+  background: var(--nav-pill);
   transition: all 0.15s;
 }
-nav a:hover { background: #bcc5d6; }
-nav a.active { background: #0f1d45; color: white; }
+nav a:hover { background: var(--nav-pill-hover); }
+nav a.active { background: var(--primary); color: white; }
 
 /* ── Modal (shared across pages) ── */
 .modal-overlay {
@@ -66,7 +89,7 @@ nav a.active { background: #0f1d45; color: white; }
 .modal-overlay.active { display: flex; }
 
 .modal {
-  background: white;
+  background: var(--surface);
   border-radius: 12px;
   padding: 1.5rem;
   width: 90%;
@@ -78,6 +101,7 @@ nav a.active { background: #0f1d45; color: white; }
 .modal h2 {
   margin-bottom: 1rem;
   font-size: 1.2rem;
+  color: var(--primary-dark);
 }
 .modal label {
   display: block;
@@ -85,15 +109,19 @@ nav a.active { background: #0f1d45; color: white; }
   font-weight: 600;
   margin-top: 0.75rem;
   margin-bottom: 0.25rem;
-  color: #475569;
+  color: var(--text-secondary);
 }
 .modal input, .modal select, .modal textarea {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 0.9rem;
   font-family: inherit;
+}
+.modal input:focus, .modal select:focus, .modal textarea:focus {
+  border-color: var(--primary-light);
+  outline: none;
 }
 .modal textarea { resize: vertical; min-height: 60px; }
 .modal-buttons {
@@ -110,12 +138,12 @@ nav a.active { background: #0f1d45; color: white; }
   font-size: 0.9rem;
   font-weight: 500;
 }
-.btn-save { background: #2563eb; color: white; }
-.btn-save:hover { background: #1d4ed8; }
-.btn-cancel { background: #e2e8f0; color: #475569; }
-.btn-cancel:hover { background: #cbd5e1; }
-.btn-delete { background: #ef4444; color: white; }
-.btn-delete:hover { background: #dc2626; }
+.btn-save { background: var(--primary); color: white; }
+.btn-save:hover { background: var(--primary-dark); }
+.btn-cancel { background: var(--border); color: var(--text-secondary); }
+.btn-cancel:hover { background: var(--nav-pill-hover); }
+.btn-delete { background: var(--error); color: white; }
+.btn-delete:hover { background: #b91c1c; }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
@@ -124,6 +152,6 @@ nav a.active { background: #0f1d45; color: white; }
 
 @media print {
   body { background: white; font-size: 11px; }
-  header { padding: 0.75rem; background: #0f1d45 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  header { padding: 0.75rem; background: var(--primary-dark) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   nav { display: none !important; }
 }

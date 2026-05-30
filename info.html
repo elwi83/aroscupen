@@ -13,9 +13,9 @@
     padding: 0 1rem 3rem;
   }
   .section {
-    background: white;
+    background: var(--surface);
     border-radius: 12px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border);
     margin-bottom: 1.25rem;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0,0,0,0.06);
@@ -25,7 +25,7 @@
     font-weight: 700;
     font-size: 1.05rem;
     color: white;
-    background: #0f1d45;
+    background: var(--primary);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -43,7 +43,7 @@
     content: '•';
     position: absolute;
     left: 0;
-    color: #0f1d45;
+    color: var(--primary);
     font-weight: 700;
   }
   .section-body ul li.important { font-weight: 600; color: #b91c1c; }
@@ -54,14 +54,14 @@
     gap: 0.75rem;
   }
   .address-card {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: var(--background);
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 0.75rem 1rem;
   }
-  .address-card strong { display: block; font-size: 0.95rem; color: #0f1d45; margin-bottom: 0.15rem; }
-  .address-card span { font-size: 0.85rem; color: #64748b; }
-  .address-card a { display: inline-block; margin-top: 0.35rem; font-size: 0.8rem; color: #2563eb; text-decoration: none; }
+  .address-card strong { display: block; font-size: 0.95rem; color: var(--primary-dark); margin-bottom: 0.15rem; }
+  .address-card span { font-size: 0.85rem; color: var(--text-secondary); }
+  .address-card a { display: inline-block; margin-top: 0.35rem; font-size: 0.8rem; color: var(--info); text-decoration: none; }
   .address-card a:hover { text-decoration: underline; }
 
   .packlist { columns: 2; column-gap: 2rem; }
@@ -70,8 +70,8 @@
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: #0f1d45;
-    border-bottom: 2px solid #e2e8f0;
+    color: var(--primary);
+    border-bottom: 2px solid var(--border);
     padding-bottom: 0.25rem;
     margin-bottom: 0.4rem;
   }
@@ -98,7 +98,7 @@
   .link-list { list-style: none; padding: 0; }
   .link-list li { padding: 0.4rem 0; }
   .link-list li a {
-    color: #2563eb;
+    color: var(--info);
     text-decoration: none;
     font-weight: 500;
     font-size: 0.92rem;
@@ -119,8 +119,8 @@
     border-radius: 4px;
     background: transparent;
   }
-  .section.editing .link-edit-fields input { border-color: #e2e8f0; background: #f8fafc; }
-  .link-edit-fields input:focus { border-color: #2563eb; outline: none; background: white; }
+  .section.editing .link-edit-fields input { border-color: var(--border); background: var(--background); }
+  .link-edit-fields input:focus { border-color: var(--primary-light); outline: none; background: var(--surface); }
 
   /* Edit mode */
   .btn-edit-section {
@@ -147,16 +147,16 @@
     font-size: 0.78rem;
     font-weight: 500;
   }
-  .btn-add-item { background: #10b981; }
-  .btn-add-item:hover { background: #059669; }
-  .btn-add-group { background: #2563eb; margin-top: 0.75rem; }
-  .btn-add-group:hover { background: #1d4ed8; }
+  .btn-add-item { background: var(--accent); }
+  .btn-add-item:hover { background: var(--primary-light); }
+  .btn-add-group { background: var(--primary); margin-top: 0.75rem; }
+  .btn-add-group:hover { background: var(--primary-dark); }
 
   .btn-delete-item, .btn-delete-group {
     display: none;
     background: none;
     border: none;
-    color: #ef4444;
+    color: var(--error);
     cursor: pointer;
     font-size: 0.95rem;
     padding: 0 0.25rem;
@@ -185,8 +185,8 @@
     border-radius: 4px;
     background: transparent;
   }
-  .section.editing .editable-item input { border-color: #e2e8f0; background: #f8fafc; }
-  .editable-item input:focus { border-color: #2563eb; outline: none; background: white; }
+  .section.editing .editable-item input { border-color: var(--border); background: var(--background); }
+  .editable-item input:focus { border-color: var(--primary-light); outline: none; background: var(--surface); }
 
   .editable-item .item-text {
     flex: 1;
@@ -204,14 +204,14 @@
   }
   .item-text.bold { font-weight: 700; }
   .item-text.important { color: #b91c1c; font-weight: 600; }
-  .section.editing .editable-item .item-text { border-color: #e2e8f0; background: #f8fafc; cursor: text; }
-  .editable-item .item-text:focus { border-color: #2563eb; background: white; }
+  .section.editing .editable-item .item-text { border-color: var(--border); background: var(--background); cursor: text; }
+  .editable-item .item-text:focus { border-color: var(--primary-light); background: var(--surface); }
 
   .editable-item .important-toggle {
     display: none;
     font-size: 0.7rem;
     padding: 0.15rem 0.35rem;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border);
     border-radius: 4px;
     cursor: pointer;
     background: white;
@@ -235,8 +235,8 @@
     background: transparent;
     font-size: 0.85rem;
   }
-  .section.editing .address-edit-fields input { border-color: #e2e8f0; background: #f8fafc; }
-  .address-edit-fields input:focus { border-color: #2563eb; outline: none; background: white; }
+  .section.editing .address-edit-fields input { border-color: var(--border); background: var(--background); }
+  .address-edit-fields input:focus { border-color: var(--primary-light); outline: none; background: var(--surface); }
 
   .packlist-group-header {
     display: flex;
@@ -250,19 +250,19 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: #0f1d45;
+    color: var(--primary);
     font-family: inherit;
     border-radius: 4px;
     background: transparent;
     flex: 1;
   }
-  .section.editing .packlist-group-header input { border-color: #e2e8f0; background: #f8fafc; }
-  .packlist-group-header input:focus { border-color: #2563eb; outline: none; background: white; }
+  .section.editing .packlist-group-header input { border-color: var(--border); background: var(--background); }
+  .packlist-group-header input:focus { border-color: var(--primary-light); outline: none; background: var(--surface); }
 
   .save-status-info {
     text-align: center;
     font-size: 0.8rem;
-    color: #10b981;
+    color: var(--success);
     padding: 0.5rem;
   }
 </style>
@@ -412,9 +412,9 @@
       html += `<div class="address-card">
         <div class="editable-item" style="margin-bottom:0.25rem">
           <div class="address-edit-fields">
-            <input type="text" value="${escapeAttr(addr.name)}" oninput="updateAddress(${i},'name',this.value)" placeholder="Namn" style="font-weight:700;color:#0f1d45;font-size:0.95rem">
-            <input type="text" value="${escapeAttr(addr.address)}" oninput="updateAddress(${i},'address',this.value)" placeholder="Adress" style="color:#64748b">
-            <input type="text" value="${escapeAttr(addr.mapUrl)}" oninput="updateAddress(${i},'mapUrl',this.value)" placeholder="Google Maps URL" style="color:#2563eb;font-size:0.8rem">
+            <input type="text" value="${escapeAttr(addr.name)}" oninput="updateAddress(${i},'name',this.value)" placeholder="Namn" style="font-weight:700;color:#0F5A22;font-size:0.95rem">
+            <input type="text" value="${escapeAttr(addr.address)}" oninput="updateAddress(${i},'address',this.value)" placeholder="Adress" style="color:#4B5563">
+            <input type="text" value="${escapeAttr(addr.mapUrl)}" oninput="updateAddress(${i},'mapUrl',this.value)" placeholder="Google Maps URL" style="color:#2563EB;font-size:0.8rem">
           </div>
           <button class="btn-delete-item" onclick="deleteAddress(${i})" aria-label="Ta bort adress" style="align-self:flex-start">×</button>
         </div>
@@ -468,16 +468,19 @@
     const items = infoData.lankar || [];
     let html = '<ul class="link-list">';
     items.forEach((link, i) => {
-      html += `<li>
-        <div class="editable-item">
-          <div class="link-edit-fields">
-            <input type="text" value="${escapeAttr(link.text)}" oninput="updateLink(${i},'text',this.value)" placeholder="Länktext">
-            <input type="text" value="${escapeAttr(link.url)}" oninput="updateLink(${i},'url',this.value)" placeholder="https://..." style="color:#2563eb;font-size:0.82rem">
+      if (isEditing) {
+        html += `<li>
+          <div class="editable-item">
+            <div class="link-edit-fields">
+              <input type="text" value="${escapeAttr(link.text)}" oninput="updateLink(${i},'text',this.value)" placeholder="Länktext">
+              <input type="text" value="${escapeAttr(link.url)}" oninput="updateLink(${i},'url',this.value)" placeholder="https://..." style="color:#2563EB;font-size:0.82rem">
+            </div>
+            <button class="btn-delete-item" onclick="deleteLink(${i})" aria-label="Ta bort länk">&times;</button>
           </div>
-          <button class="btn-delete-item" onclick="deleteLink(${i})" aria-label="Ta bort länk">&times;</button>
-        </div>
-        ${!isEditing && link.url ? `<a href="${escapeAttr(link.url)}" target="_blank" rel="noopener">${escapeHtml(link.text || link.url)} &rarr;</a>` : ''}
-      </li>`;
+        </li>`;
+      } else if (link.url) {
+        html += `<li><a href="${escapeAttr(link.url)}" target="_blank" rel="noopener">${escapeHtml(link.text || link.url)} →</a></li>`;
+      }
     });
     html += '</ul>';
     html += `<button class="btn-add-item" onclick="addLink()">+ Lägg till länk</button>`;
@@ -506,13 +509,13 @@
     saveLocal();
     const status = document.getElementById('saveStatus');
     status.textContent = 'Sparar...';
-    status.style.color = '#f59e0b';
+    status.style.color = '#F59E0B';
     clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
       syncToFirebase();
       status.textContent = '✓ Sparat';
-      status.style.color = '#10b981';
-      setTimeout(() => { status.textContent = '✓ Sparas automatiskt'; status.style.color = '#10b981'; }, 2000);
+      status.style.color = '#22C55E';
+      setTimeout(() => { status.textContent = '✓ Sparas automatiskt'; status.style.color = '#22C55E'; }, 2000);
     }, 500);
   }
 
@@ -579,7 +582,7 @@
           console.error('Firebase sync failed:', err);
           const status = document.getElementById('saveStatus');
           status.textContent = '✗ Synk misslyckades';
-          status.style.color = '#ef4444';
+          status.style.color = '#DC2626';
         });
     }
   }

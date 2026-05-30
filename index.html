@@ -18,8 +18,8 @@
     justify-content: center;
     gap: 0.75rem;
     padding: 1rem 2rem;
-    background: white;
-    border-bottom: 1px solid #e2e8f0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
     flex-wrap: wrap;
   }
   .toolbar button {
@@ -31,17 +31,17 @@
     font-weight: 500;
     transition: all 0.15s;
   }
-  .btn-add { background: #10b981; color: white; }
-  .btn-add:hover { background: #059669; }
-  .btn-filter { background: #e2e8f0; color: #475569; }
-  .btn-filter:hover { background: #cbd5e1; }
-  .btn-filter.active-all { background: #1e293b; color: white; }
+  .btn-add { background: var(--accent); color: white; }
+  .btn-add:hover { background: var(--primary-light); }
+  .btn-filter { background: var(--nav-pill); color: var(--primary); }
+  .btn-filter:hover { background: var(--nav-pill-hover); }
+  .btn-filter.active-all { background: var(--primary-dark); color: white; }
   .filter-group {
     display: flex;
     gap: 0;
     border-radius: 6px;
     overflow: hidden;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--nav-pill-hover);
   }
   .filter-group button {
     border-radius: 0;
@@ -59,15 +59,15 @@
     border-radius: 20px;
     font-weight: 500;
   }
-  .online-indicator.online { background: #d1fae5; color: #065f46; }
-  .online-indicator.offline { background: #f1f5f9; color: #64748b; }
+  .online-indicator.online { background: #d1fae5; color: var(--primary-dark); }
+  .online-indicator.offline { background: var(--background); color: var(--text-secondary); }
   .status-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     display: inline-block;
   }
-  .online .status-dot { background: #10b981; }
+  .online .status-dot { background: var(--success); }
   .offline .status-dot { background: #94a3b8; }
 
   .legend {
@@ -99,8 +99,8 @@
   }
   .day-column {
     position: relative;
-    border-left: 1px solid #e2e8f0;
-    border-right: 1px solid #e2e8f0;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
   }
   .day-column:not(:first-child) { border-left: none; }
   .day-header {
@@ -108,9 +108,10 @@
     padding: 0.75rem;
     font-weight: 700;
     font-size: 1rem;
-    background: #f1f5f9;
-    border-top: 1px solid #e2e8f0;
-    border-bottom: 1px solid #e2e8f0;
+    background: #000000;
+    color: white;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
     z-index: 10;
@@ -122,7 +123,7 @@
     position: absolute;
     left: 0;
     right: 0;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--border);
     height: 0;
     z-index: 0;
   }
@@ -133,7 +134,7 @@
     font-size: 0.7rem;
     color: #94a3b8;
     z-index: 1;
-    background: #f8fafc;
+    background: var(--background);
     padding: 0 2px;
   }
   .event-block {
@@ -177,12 +178,12 @@
   .collab-instructions summary {
     cursor: pointer;
     font-weight: 600;
-    color: #475569;
+    color: var(--text-secondary);
   }
 
   @media (max-width: 768px) {
     .calendar { grid-template-columns: 1fr !important; }
-    .day-column { border-left: 1px solid #e2e8f0; }
+    .day-column { border-left: 1px solid var(--border); }
     .event-block.col-left { left: 40px; right: calc(50% - 16px); }
     .event-block.col-right { left: calc(50% + 24px); right: 4px; }
   }
@@ -209,8 +210,8 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: white;
-    border: 1px solid #e2e8f0;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 0.5rem 1rem;
     font-size: 0.85rem;
@@ -226,11 +227,11 @@
   }
   .next-event-card .next-countdown {
     font-weight: 700;
-    color: #0f1d45;
+    color: var(--primary);
     white-space: nowrap;
   }
   .next-event-card .next-label {
-    color: #475569;
+    color: var(--text-secondary);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -247,7 +248,7 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: #ef4444;
+    background: var(--error);
     z-index: 8;
     pointer-events: none;
   }
@@ -259,7 +260,7 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: #ef4444;
+    background: var(--error);
   }
 
   /* Result badge */
@@ -275,7 +276,7 @@
 
   /* Share button */
   .btn-share {
-    background: #6366f1;
+    background: var(--primary-light);
     color: white;
     padding: 0.5rem 1rem;
     border: none;
@@ -284,7 +285,7 @@
     font-size: 0.9rem;
     font-weight: 500;
   }
-  .btn-share:hover { background: #4f46e5; }
+  .btn-share:hover { background: var(--primary); }
 </style>
 </head>
 <body>
