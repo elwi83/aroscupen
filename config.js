@@ -35,7 +35,7 @@ const CONFIG = {
   teams: [
     {
       id: "blue",
-      name: "Lag Grön",
+      name: "Lag Grön - P15:1A",
       color: "#0F5A22",
       lightBg: "#D4E8D7",
       assemblyBg: "#2F8A3D",
@@ -46,7 +46,7 @@ const CONFIG = {
     },
     {
       id: "white",
-      name: "Lag Vit",
+      name: "Lag Vit - P15:1B",
       color: "#64748b",
       lightBg: "#f1f5f9",
       assemblyBg: "#cbd5e1",
