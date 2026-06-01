@@ -38,13 +38,10 @@
   table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
   th { text-align: left; padding: 1px 5px; border-bottom: 2px solid var(--border); font-weight: 600; color: var(--text-secondary); font-size: 0.8rem; white-space: nowrap; }
   td { padding: 1px 5px; border-bottom: 1px solid var(--background); white-space: nowrap; }
-  th:nth-child(1), td:nth-child(1) { min-width: 10ch; }
-  th:nth-child(2), td:nth-child(2) { white-space: normal; text-align: center; width: 3.5rem; }
-  th:nth-child(3), td:nth-child(3) { white-space: normal; min-width: 10ch; }
-  th:nth-child(4), td:nth-child(4) { min-width: 8ch; }
-  td:nth-child(2) input[type=checkbox] { width: 1rem; height: 1rem; cursor: pointer; }
-  td:nth-child(5), th:nth-child(5) { white-space: normal; width: 99%; }
-  td:nth-child(6) { width: 30px; }
+  th:nth-child(1), td:nth-child(1) { min-width: 10ch; width: 20%; }
+  th:nth-child(2), td:nth-child(2) { min-width: 14ch; width: 25%; }
+  th:nth-child(3), td:nth-child(3) { white-space: normal; width: 55%; }
+  td:nth-child(4) { width: 30px; }
   tr:last-child td { border-bottom: none; }
 
   .btn-edit-mode {
@@ -209,8 +206,6 @@
           <thead>
             <tr>
               <th>Spelare</th>
-              <th>Sover med<br>laget</th>
-              <th>Förälder sover<br>med laget</th>
               <th>Åker med</th>
               <th>Kommentar</th>
             </tr>
@@ -266,7 +261,7 @@
     tbody.innerHTML = '';
     if (!roster[teamId] || roster[teamId].length === 0) {
       const tr = document.createElement('tr');
-      tr.innerHTML = '<td colspan="6" class="empty-state">Inga spelare ännu — klicka "Ändra" för att lägga till</td>';
+      tr.innerHTML = '<td colspan="4" class="empty-state">Inga spelare ännu — klicka "Ändra" för att lägga till</td>';
       tbody.appendChild(tr);
       return;
     }
@@ -274,9 +269,7 @@
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td><input type="text" value="${escapeAttr(player.name)}" oninput="autoSave('${teamId}',${i},'name',this.value)" placeholder="Namn"></td>
-        <td><input type="checkbox" ${player.sleeps === true || player.sleeps === 'Ja' ? 'checked' : ''} onchange="autoSave('${teamId}',${i},'sleeps',this.checked)"></td>
-        <td><input type="text" value="${escapeAttr(player.parent || '')}" oninput="autoSave('${teamId}',${i},'parent',this.value)" placeholder="Namn"></td>
-        <td><input type="text" value="${escapeAttr(player.ridesWith)}" oninput="autoSave('${teamId}',${i},'ridesWith',this.value)" placeholder="Åker med..."></td>
+        <td><input type="text" value="${escapeAttr(player.ridesWith)}" oninput="autoSave('${teamId}',${i},'ridesWith',this.value)"></td>
         <td><textarea oninput="autoSave('${teamId}',${i},'comment',this.value)" placeholder="Kommentar">${escapeHtml(player.comment || '')}</textarea></td>
         <td><button class="btn-delete-row" onclick="removeRow('${teamId}',${i})" title="Ta bort" aria-label="Ta bort spelare">×</button></td>
       `;
@@ -289,7 +282,7 @@
   }
 
   function addRow(teamId) {
-    roster[teamId].push({ name: '', sleeps: '', parent: '', ridesWith: '', comment: '' });
+    roster[teamId].push({ name: '', ridesWith: '', comment: '' });
     saveRosterLocal();
     syncToFirebase();
     render();
