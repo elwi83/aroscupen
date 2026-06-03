@@ -83,7 +83,7 @@ const CONFIG = {
 
   // Rumsnamn — alla som delar samma rumsnamn ser varandras ändringar.
   // Byt till ett nytt namn varje turnering, t.ex. "segeltorps-gothia-2027"
-  roomName: "segeltorps-cup-2026",
+  roomName: "aroscupen-2026",
 
   // ── Händelsekategorier ──
   // Kategorier med useTeamColor: true färgas efter lagets färger.

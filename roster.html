@@ -239,7 +239,7 @@
   }
 
   function loadRoster() {
-    const saved = localStorage.getItem('orebrocup_roster');
+    const saved = localStorage.getItem('aroscupen_roster');
     try {
       if (saved) {
         const parsed = JSON.parse(saved);
@@ -253,7 +253,7 @@
   }
 
   function saveRosterLocal() {
-    localStorage.setItem('orebrocup_roster', JSON.stringify(roster));
+    localStorage.setItem('aroscupen_roster', JSON.stringify(roster));
   }
 
   function renderTeam(teamId) {

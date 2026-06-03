@@ -369,7 +369,7 @@
   }
 
   function loadData() {
-    const saved = localStorage.getItem('orebrocup_info');
+    const saved = localStorage.getItem('aroscupen_info');
     try {
       if (saved) infoData = JSON.parse(saved);
     } catch {
@@ -378,7 +378,7 @@
   }
 
   function saveLocal() {
-    localStorage.setItem('orebrocup_info', JSON.stringify(infoData));
+    localStorage.setItem('aroscupen_info', JSON.stringify(infoData));
   }
 
   function renderList(sectionKey) {
